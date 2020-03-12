@@ -1,0 +1,56 @@
+// sorting the array and getting the first item in the array to find the highest value
+
+const obj = {'a': 1, b: 3, c: {ca: 45, cb: 6, cc: {cca: 190}, cd: 300, ce: {cea: {lo: 500, bo: 0}}}};
+
+const getSortedArray = (obj) => {
+
+    const sortObject = (obj) => {
+        if (!obj || (!Object.keys(obj)) || (obj instanceof Array)) {
+            throw new Error('illegal argument');
+        }
+        let anArray = [];
+        Object.values(obj).forEach(value => {
+            if ((value instanceof Object) && !(value instanceof Array)) {
+                anArray = anArray.concat(sortObject(value))
+            } else {
+                //push values
+                anArray.push(value);
+            }
+        });
+
+        return anArray;
+    };
+    let sorted = sortObject(obj).sort((a, b)=> b-a);
+    return sorted;
+
+
+};
+
+
+describe('getSortedArray accepts nested object and returns sorted array', () => {
+    describe('accepts an object', () => {
+        it("throws error if undefined is passed", () => {
+            let error = false;
+            try {
+                getSortedArray();
+            } catch (e) {
+                error = true;
+            }
+            expect(error).toEqual(true);
+        });
+        it("throws error if argument is not an object", () => {
+            let error = false;
+            try {
+                getSortedArray([1, 2, 3]);
+            } catch (e) {
+                error = true;
+            }
+            expect(error).toEqual(true);
+        });
+    });
+    it('returns sorted array in desc order', () => {
+        let sortedArray = getSortedArray(obj);
+        expect(sortedArray.length).toEqual(8);
+        expect(sortedArray[0]).toEqual(500);
+    });
+});
